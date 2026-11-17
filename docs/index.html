@@ -1,0 +1,397 @@
+<title>AI Field Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: one reading column, sticky section index, a working decision tool in the middle */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --ink:#0f1b2d; --muted:#51607a; --line:#d9e0ea;
+  --accent:#1f5fd1; --accent-soft:#e6eefc; --agent:#0b7a6b; --agent-soft:#dff3ef; --warn:#a4400b; --warn-soft:#fbeadf;
+  --head:'Space Grotesk','IBM Plex Sans',system-ui,sans-serif; --body:'IBM Plex Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b1220; --surface:#121b2e; --ink:#e8edf6; --muted:#9aa8c2; --line:#24314a;
+  --accent:#6ea0ff; --accent-soft:#17264a; --agent:#4fd1bb; --agent-soft:#0f2d2d; --warn:#f0a070; --warn-soft:#33200f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --surface:#121b2e; --ink:#e8edf6; --muted:#9aa8c2; --line:#24314a;
+  --accent:#6ea0ff; --accent-soft:#17264a; --agent:#4fd1bb; --agent-soft:#0f2d2d; --warn:#f0a070; --warn-soft:#33200f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+.wrap{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:200px minmax(0,1fr);gap:48px}
+nav.index{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding-top:40px;font-size:14px}
+nav.index p{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+nav.index a{display:block;padding:5px 0 5px 12px;border-left:2px solid var(--line);color:var(--muted);text-decoration:none}
+nav.index a:hover,nav.index a:focus-visible{color:var(--ink);border-left-color:var(--accent)}
+main{padding-block:40px 80px;min-width:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--head);font-weight:700;font-size:clamp(34px,6vw,56px);line-height:1.05;margin:10px 0 16px;text-wrap:balance;letter-spacing:-.02em}
+.lede{font-size:19px;color:var(--muted);max-width:60ch;margin:0}
+h2{font-family:var(--head);font-size:clamp(24px,3.4vw,32px);line-height:1.15;margin:0 0 12px;text-wrap:balance;letter-spacing:-.01em}
+h3{font-family:var(--head);font-size:18px;margin:28px 0 8px}
+section{padding-top:56px;scroll-margin-top:16px}
+p{max-width:68ch;margin:0 0 12px}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:32px 0 0}
+.three div{background:var(--surface);border:1px solid var(--line);padding:16px;border-radius:8px}
+.three b{font-family:var(--head);font-size:20px;display:block}
+.three span{color:var(--muted);font-size:14px}
+.three div:nth-child(3){border-color:var(--agent);background:var(--agent-soft)}
+.nest{border:1.5px solid var(--line);border-radius:10px;padding:14px;background:var(--surface);margin:20px 0}
+.nest .nest{background:var(--bg);margin:12px 0 0}
+.nest .nest .nest{background:var(--surface)}
+.nest .nest .nest .nest{border-color:var(--agent);background:var(--agent-soft)}
+.nest header{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.nest strong{font-family:var(--head)}
+.nest em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.tw{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14.5px}
+th{background:var(--ink);color:var(--bg);text-align:left;font-weight:600;padding:10px 14px;font-size:13px}
+td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:18px 0;padding:0;list-style:none}
+.flow li{flex:1 1 120px;background:var(--accent-soft);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-family:var(--head);font-weight:500;font-size:15px;position:relative}
+.flow li small{display:block;font-family:var(--body);font-weight:400;font-size:12.5px;color:var(--muted);margin-top:2px}
+.flow li:last-child{background:var(--agent-soft);border-color:var(--agent)}
+.rule{border-left:3px solid var(--accent);padding:4px 0 4px 16px;margin:20px 0;font-family:var(--head);font-size:20px;line-height:1.35;max-width:60ch}
+.prompt{font-family:var(--mono);font-size:13.5px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;margin:12px 0;overflow-wrap:anywhere}
+.prompt .k{color:var(--accent);font-weight:500}
+ul.plain{padding-left:20px;margin:8px 0 12px;max-width:68ch}ul.plain li{margin-bottom:6px}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;margin:18px 0}
+.q{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.q:first-of-type{border-top:0}
+.q span{flex:1 1 260px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{padding:6px 16px;cursor:pointer;font-size:14px;font-family:var(--mono);color:var(--muted)}
+.seg input:checked+label{background:var(--accent);color:var(--surface)}
+.seg input:focus-visible+label{outline:2px solid var(--accent);outline-offset:-2px}
+.result{margin-top:16px;padding:16px;border-radius:8px;background:var(--accent-soft);border:1px solid var(--accent)}
+.result b{font-family:var(--head);font-size:22px;display:block}
+.result.agent{background:var(--agent-soft);border-color:var(--agent)}
+.result ul{margin:8px 0 0;padding-left:20px}
+.hint{font-size:12.5px;color:var(--muted)}
+.checks{list-style:none;padding:0;margin:12px 0;display:grid;gap:8px}
+.checks label{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer}
+.checks input{margin-top:5px;accent-color:var(--agent);width:16px;height:16px}
+.prog{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.risk td:first-child{color:var(--warn)}
+.search{width:100%;max-width:420px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;margin:8px 0}
+.note{font-size:13px;color:var(--muted);max-width:68ch}
+.take{background:var(--ink);color:var(--bg);border-radius:12px;padding:24px;margin-top:56px}
+.take h2{color:inherit}.take p{font-family:var(--head);font-size:20px;line-height:1.4;max-width:none;margin:0}
+footer a{color:var(--accent)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:820px){.wrap{grid-template-columns:minmax(0,1fr);gap:0}nav.index{position:static;padding-top:24px;display:flex;flex-wrap:wrap;gap:4px 14px}nav.index p{width:100%}nav.index a{border:0;padding:2px 0}.three{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+<nav class="index" aria-label="Sections">
+  <p>Contents</p>
+  <a href="#basics">What they are</a>
+  <a href="#genai">How Gen AI works</a>
+  <a href="#knowledge">RAG and fine-tuning</a>
+  <a href="#agents">What an agent is</a>
+  <a href="#choose">Prompt, workflow or agent</a>
+  <a href="#work">AI at work</a>
+  <a href="#first">Your first agent</a>
+  <a href="#risk">Risks and guardrails</a>
+  <a href="#roadmap">30-day roadmap</a>
+  <a href="#glossary">Glossary</a>
+</nav>
+
+<main>
+<header>
+  <div class="eyebrow">Beginner guide · Updated 17 Nov 2026</div>
+  <h1>AI, Gen AI and Agentic AI, told plainly</h1>
+  <p class="lede">Three terms people mix up in meetings. This guide separates them, shows where each one fits in a normal workday, and ends with a 30-day plan you can start this week.</p>
+  <div class="three">
+    <div><b>AI predicts</b><span>Finds patterns, scores and recommends.</span></div>
+    <div><b>Gen AI creates</b><span>Writes text, code, images and summaries.</span></div>
+    <div><b>Agentic AI acts</b><span>Plans steps, uses tools, works toward a goal.</span></div>
+  </div>
+</header>
+
+<section id="basics">
+  <h2>What AI is, and how the three terms relate</h2>
+  <p>Artificial intelligence is software that does tasks that normally need human judgment: spotting patterns, understanding language, making predictions. Generative AI is one capability inside it. Agentic AI is a way of using that capability to pursue a goal.</p>
+  <div class="nest" role="img" aria-label="Nested layers: AI contains machine learning, which contains generative AI, which contains agentic AI">
+    <header><strong>Artificial intelligence</strong><em>predicts</em></header>
+    <div class="nest"><header><strong>Machine learning</strong><em>learns from data</em></header>
+      <div class="nest"><header><strong>Generative AI</strong><em>creates from a prompt</em></header>
+        <div class="nest"><header><strong>Agentic AI</strong><em>acts until the goal is met</em></header></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">The nesting is a simplification. Some agents use no generative model, and plenty of generative tools never act on their own.</p>
+
+  <h3>Three kinds, one scenario: a suspicious payment</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Type</th><th>Main job</th><th>In the payment scenario</th><th>Autonomy</th></tr></thead>
+    <tbody>
+      <tr><td>Traditional AI</td><td>Classify, predict, recommend</td><td>Scores the payment as 92% likely to be fraud</td><td>One defined task</td></tr>
+      <tr><td>Generative AI</td><td>Create or transform content</td><td>Drafts the note to the customer explaining the hold</td><td>Responds to an instruction</td></tr>
+      <tr><td>Agentic AI</td><td>Work toward a goal across steps</td><td>Pulls the account history, checks recent disputes, drafts the note and asks an analyst to approve it</td><td>Chooses next steps within limits</td></tr>
+    </tbody></table></div>
+  <p><b>The analogy:</b> a smoke alarm detects. A colleague drafts. An assistant investigates, prepares the response, updates the system and checks with you before sending.</p>
+</section>
+
+<section id="genai">
+  <h2>How generative AI works</h2>
+  <p>A generative model learns patterns from huge collections of examples. When you give it an instruction, called a <b>prompt</b>, it produces a likely response one small piece at a time. It does not automatically check whether each sentence is true.</p>
+  <ol class="flow"><li>Train<small>Learn patterns from examples</small></li><li>Prompt<small>You give instruction and context</small></li><li>Generate<small>Predicts the next piece, repeatedly</small></li><li>Review<small>You check and decide</small></li></ol>
+
+  <h3>Words you will hear</h3>
+  <ul class="plain">
+    <li><b>LLM:</b> a model trained on large amounts of text to understand and write language.</li>
+    <li><b>Token:</b> a small chunk of text, sometimes a word, sometimes part of one.</li>
+    <li><b>Context window:</b> how much the model can consider in one conversation.</li>
+    <li><b>Multimodal:</b> works with text, images, audio or video.</li>
+    <li><b>Hallucination:</b> a confident answer that is false or invented.</li>
+  </ul>
+
+  <h3>A better prompt: Role, Task, Context, Format, Limits</h3>
+  <div class="prompt"><span class="k">Role:</span> You are a project manager.<br><span class="k">Task:</span> Summarise the update below for senior leaders.<br><span class="k">Context:</span> The launch moved two weeks because of a vendor delay.<br><span class="k">Format:</span> Five bullets: progress, risks, decisions needed, next steps, owner.<br><span class="k">Limits:</span> Do not invent information that is not in the update.</div>
+</section>
+
+<section id="knowledge">
+  <h2>Making AI know your material: RAG and fine-tuning</h2>
+  <p>A general model does not know your latest policies or project data. <b>Retrieval-augmented generation (RAG)</b> searches your documents first, then hands the relevant passages to the model. It is like asking a colleague to look up the policy before answering.</p>
+  <ol class="flow"><li>Your question</li><li>Find relevant files</li><li>Model reads the evidence</li><li>Answer with sources</li></ol>
+  <div class="tw"><table>
+    <thead><tr><th>Approach</th><th>Think of it as</th><th>Use it when</th></tr></thead>
+    <tbody>
+      <tr><td>Prompting</td><td>Clear instructions to a colleague</td><td>You need a better response to a task</td></tr>
+      <tr><td>RAG</td><td>Giving them the right reference documents</td><td>The answer must use current or private information</td></tr>
+      <tr><td>Fine-tuning</td><td>Training them on specialised examples</td><td>You need consistent style or behaviour that prompting cannot reach</td></tr>
+    </tbody></table></div>
+  <p><b>Rule of thumb:</b> improve the prompt first, add RAG when the model needs your information, consider fine-tuning only with a clear reason and good examples. Related ideas: an <b>embedding</b> is a numeric fingerprint of meaning, <b>vector search</b> finds content with similar meaning, and <b>grounding</b> ties an answer to reliable sources.</p>
+</section>
+
+<section id="agents">
+  <h2>What an agent is</h2>
+  <p>An AI agent is software given a goal, instructions and a set of tools. It decides the next step, looks at the result and continues, inside limits that people set.</p>
+  <ol class="flow"><li>Understand goal</li><li>Plan steps</li><li>Use tools</li><li>Check result</li><li>Deliver or ask</li></ol>
+  <p><b>Example:</b> you ask for help with a delayed milestone. The agent reads the tracker, finds overdue tasks, checks recent status notes, drafts a risk summary and prepares follow-ups. A person approves anything that leaves the building or changes an official record.</p>
+  <h3>The building blocks</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Part</th><th>Plain meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Model</td><td>The reasoning engine that interprets instructions and picks the next step</td></tr>
+      <tr><td>Goal and instructions</td><td>What success looks like, what the agent may do, when it must stop</td></tr>
+      <tr><td>Planning</td><td>Breaking a big task into smaller steps</td></tr>
+      <tr><td>Tools</td><td>Search, email, spreadsheets, databases, APIs</td></tr>
+      <tr><td>Memory</td><td>The current task's notes and useful past context</td></tr>
+      <tr><td>Orchestration</td><td>The logic that coordinates steps, tools or several agents</td></tr>
+      <tr><td>Guardrails</td><td>Permissions, limits, approvals, logs, safety checks</td></tr>
+    </tbody></table></div>
+  <p><b>The loop:</b> think, act, observe, decide. It stops when the goal is met or a limit is reached. An assistant helps you respond to a request. An agent can take several steps toward a goal. Autonomy varies and is never unlimited by default.</p>
+</section>
+
+<section id="choose">
+  <h2>Prompt, workflow or agent?</h2>
+  <p>Most tasks do not need an agent. A prompt or a fixed workflow is cheaper, faster and easier to control. Answer four questions about your task.</p>
+  <form class="tool" id="decider" aria-label="Decision tool" onsubmit="return false">
+    <div class="q"><span>Can you write the steps down in advance?</span><div class="seg"><input type="radio" name="q1" id="q1y" value="1"><label for="q1y">Yes</label><input type="radio" name="q1" id="q1n" value="0" checked><label for="q1n">No</label></div></div>
+    <div class="q"><span>Does it need information or tools beyond what you can paste into a prompt?</span><div class="seg"><input type="radio" name="q2" id="q2y" value="1"><label for="q2y">Yes</label><input type="radio" name="q2" id="q2n" value="0" checked><label for="q2n">No</label></div></div>
+    <div class="q"><span>Does the next action depend on what gets discovered along the way?</span><div class="seg"><input type="radio" name="q3" id="q3y" value="1"><label for="q3y">Yes</label><input type="radio" name="q3" id="q3n" value="0" checked><label for="q3n">No</label></div></div>
+    <div class="q"><span>Could a wrong action cost money, lose data or damage trust?</span><div class="seg"><input type="radio" name="q4" id="q4y" value="1"><label for="q4y">Yes</label><input type="radio" name="q4" id="q4n" value="0" checked><label for="q4n">No</label></div></div>
+    <div class="result" id="out" aria-live="polite"></div>
+    <p class="hint">Starting answers are an example: a one-off summary task.</p>
+  </form>
+
+  <div class="tw"><table>
+    <thead><tr><th>Need</th><th>Best starting point</th></tr></thead>
+    <tbody>
+      <tr><td>Turn meeting notes into five action items</td><td>Prompt: paste the notes, ask for owners and due dates</td></tr>
+      <tr><td>Every Friday, build the same status report from a fixed tracker</td><td>Workflow: same steps, same order, every week</td></tr>
+      <tr><td>Find out why a release slipped across several systems and propose a recovery plan</td><td>Agent: the path depends on what the evidence shows</td></tr>
+    </tbody></table></div>
+  <h3>Common agent patterns</h3>
+  <ul class="plain">
+    <li><b>Prompt chain:</b> one AI step feeds the next in a fixed order.</li>
+    <li><b>Routing:</b> classify the request, send it to the right specialist.</li>
+    <li><b>Single agent:</b> one agent picks tools and steps until done.</li>
+    <li><b>Orchestrator and workers:</b> a lead agent splits work among specialists and merges results.</li>
+    <li><b>Multi-agent team:</b> agents collaborate or review each other. Use it only when the extra coordination earns its cost.</li>
+  </ul>
+</section>
+
+<section id="work">
+  <h2>AI at work</h2>
+  <p>Generative AI produces or transforms one piece of work. An agent coordinates several steps toward a finished outcome.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Area</th><th>Gen AI can help with</th><th>An agent could</th></tr></thead>
+    <tbody>
+      <tr><td>Project management</td><td>Status reports, minutes, risk summaries, stakeholder updates</td><td>Review project data, spot exceptions, draft a recovery plan and follow-ups for approval</td></tr>
+      <tr><td>Finance</td><td>Explain variances, summarise reports, draft commentary</td><td>Match records, flag anomalies, gather evidence, assemble a review pack</td></tr>
+      <tr><td>Data management</td><td>Explain fields, draft mapping rules, summarise data issues</td><td>Check incoming files, compare records, flag breaks, build an exception queue</td></tr>
+      <tr><td>Customer support</td><td>Summarise tickets, draft replies</td><td>Investigate a routine issue across systems and prepare a resolution, escalating exceptions</td></tr>
+      <tr><td>HR</td><td>Draft job descriptions, answer policy questions</td><td>Coordinate interview scheduling and onboarding checklists</td></tr>
+      <tr><td>Sales</td><td>Summarise calls, draft emails</td><td>Research an account, update CRM fields, prepare a meeting brief</td></tr>
+    </tbody></table></div>
+  <h3>Case: quarterly portfolio data</h3>
+  <p>An AI-enabled workflow can explain a valuation movement or draft commentary on a data-quality exception. A more agentic system can fetch the relevant files, compare records across sources, find inconsistencies and route an exception report to the right reviewer.</p>
+  <p>The boundary stays clear: the system does not silently overwrite historical valuations, change official books and records or publish client-facing figures. Those actions need authorised controls, reconciliation and human sign-off.</p>
+  <h3>What makes a good use case</h3>
+  <ul class="plain">
+    <li>A repetitive task that eats real time.</li>
+    <li>A clear definition of a good result.</li>
+    <li>Access to reliable data and approved tools.</li>
+    <li>A way to measure time saved, quality gained or errors avoided.</li>
+    <li>A safe route for exceptions and human decisions.</li>
+  </ul>
+</section>
+
+<section id="first">
+  <h2>Building your first agent</h2>
+  <p>Pick one narrow, low-risk task. Build the simplest version that completes it. Add complexity only when testing shows you need it.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Day</th><th>What to do</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Choose the task. Write what "done" means. Collect about 20 real examples.</td></tr>
+      <tr><td>2</td><td>Do the task by hand. Record the steps, tools and decisions.</td></tr>
+      <tr><td>3</td><td>Build a simple version: one prompt, one or two read-only tools.</td></tr>
+      <tr><td>4</td><td>Test on your examples. Log mistakes, improve instructions.</td></tr>
+      <tr><td>5</td><td>Add one write action only if needed. Put human approval in front of it and set limits.</td></tr>
+      <tr><td>6</td><td>Run in shadow mode: the agent proposes, a person decides.</td></tr>
+      <tr><td>7</td><td>Review results, failures and logs. Decide whether it is safe and useful enough to expand.</td></tr>
+    </tbody></table></div>
+  <h3>Design tools like a briefing for a new colleague</h3>
+  <ul class="plain">
+    <li>Use clear names, such as <code>search_orders</code> or <code>create_draft</code>.</li>
+    <li>Say when a tool should and should not be used.</li>
+    <li>Keep inputs simple and results short and useful.</li>
+    <li>Start read-only. Allow changes to records only when justified.</li>
+    <li>Give each agent only the access it needs.</li>
+  </ul>
+  <h3>MCP and memory</h3>
+  <p>The Model Context Protocol (MCP) is an open standard for connecting AI applications to external tools and data, like a shared plug. It does not make a system safe or grant permissions by itself. Access still has to be configured and controlled.</p>
+  <p>Memory comes in three kinds: <b>working memory</b> (the goal, recent steps and tool results), <b>short-term notes</b> (a running plan for a long task) and <b>long-term memory</b> (past cases, preferences or company knowledge, retrieved when needed).</p>
+</section>
+
+<section id="risk">
+  <h2>Risks, guardrails and measuring results</h2>
+  <p>The more freedom a system has to act, the more you need to control its access, check its work and keep a person accountable.</p>
+  <div class="tw risk"><table>
+    <thead><tr><th>Risk</th><th>What can go wrong</th><th>Protection</th></tr></thead>
+    <tbody>
+      <tr><td>Hallucination</td><td>A confident but wrong answer</td><td>Use trusted sources, ask for evidence, verify important facts</td></tr>
+      <tr><td>Bias</td><td>Outputs unfairly favour or disadvantage groups</td><td>Test varied cases, keep human review on important decisions</td></tr>
+      <tr><td>Privacy</td><td>Sensitive data goes to an unapproved tool</td><td>Use approved tools, minimise personal data, follow policy</td></tr>
+      <tr><td>Prompt injection</td><td>Text in a file or web page tries to steer the agent</td><td>Treat external content as data, not instructions; restrict permissions</td></tr>
+      <tr><td>Over-autonomy</td><td>An agent sends, deletes, pays or changes something wrongly</td><td>Require approval for high-impact or irreversible actions</td></tr>
+      <tr><td>Over-reliance</td><td>People stop checking and errors go unnoticed</td><td>Spot-check results, keep a named human owner</td></tr>
+    </tbody></table></div>
+  <h3>How you know an agent is working</h3>
+  <ul class="plain">
+    <li><b>Task success rate:</b> how often it finishes correctly.</li>
+    <li><b>Time to complete:</b> faster than the current process?</li>
+    <li><b>Cost per run:</b> do benefits outweigh model and tool costs?</li>
+    <li><b>Human intervention:</b> how often someone must correct or take over.</li>
+    <li><b>Safety and quality:</b> right tools, right order, no unsafe actions.</li>
+  </ul>
+  <h3>Before launch</h3>
+  <ul class="checks" id="checks">
+    <li><label><input type="checkbox"> Success measure and test examples exist</label></li>
+    <li><label><input type="checkbox"> Tools and permissions are clearly defined</label></li>
+    <li><label><input type="checkbox"> Risky actions require human approval</label></li>
+    <li><label><input type="checkbox"> Step, time and spend limits are set</label></li>
+    <li><label><input type="checkbox"> Runs are logged and reviewable</label></li>
+    <li><label><input type="checkbox"> There is an off switch and a named owner</label></li>
+  </ul>
+  <div class="prog" id="prog" aria-live="polite"></div>
+</section>
+
+<section id="roadmap">
+  <h2>Your 30-day roadmap</h2>
+  <p>You do not need to become a developer. The aim is to understand the concepts, use AI responsibly and build confidence through exercises.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Week</th><th>Focus</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>AI and Gen AI basics</td><td>Have an assistant summarise a public article, explain a concept and draft a professional email. Check the facts.</td></tr>
+      <tr><td>2</td><td>Prompting and your data</td><td>Practise role, task, context, format, limits. Ask questions against a few non-confidential documents.</td></tr>
+      <tr><td>3</td><td>Workflows and tools</td><td>Map a repeatable task: inputs, steps, checks, output. Automate one low-risk step.</td></tr>
+      <tr><td>4</td><td>Agents and responsible use</td><td>Design a narrow agent: its tools, boundaries, approval points and success measures.</td></tr>
+    </tbody></table></div>
+</section>
+
+<section id="glossary">
+  <h2>Glossary</h2>
+  <label for="gs" class="hint">Filter terms</label><br>
+  <input class="search" id="gs" type="search" placeholder="Try: token, RAG, agent" autocomplete="off">
+  <div class="tw"><table id="gt">
+    <thead><tr><th>Term</th><th>Plain meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Model</td><td>The trained system that produces an answer or output</td></tr>
+      <tr><td>LLM</td><td>A model trained on large amounts of language data</td></tr>
+      <tr><td>Prompt</td><td>The instruction and context you give</td></tr>
+      <tr><td>Token</td><td>A small piece of text a model processes</td></tr>
+      <tr><td>Context window</td><td>How much information the model can consider at once</td></tr>
+      <tr><td>Embedding</td><td>A numeric fingerprint of meaning</td></tr>
+      <tr><td>RAG</td><td>Finding relevant information before generating an answer</td></tr>
+      <tr><td>Fine-tuning</td><td>Extra training to shape a model's behaviour</td></tr>
+      <tr><td>Hallucination</td><td>A fluent but false or invented answer</td></tr>
+      <tr><td>Multimodal</td><td>Works across text, images, audio or video</td></tr>
+      <tr><td>Agent</td><td>Software that works toward a goal using reasoning and tools</td></tr>
+      <tr><td>Tool use</td><td>An AI system calling an external function, app or API</td></tr>
+      <tr><td>MCP</td><td>A standard way for AI apps to connect to tools and data</td></tr>
+      <tr><td>Orchestration</td><td>Coordinating steps, tools or agents</td></tr>
+      <tr><td>Guardrails</td><td>Rules, limits and checks that keep AI use safer</td></tr>
+    </tbody></table></div>
+</section>
+
+<div class="take">
+  <h2>The takeaway</h2>
+  <p>Start with the problem, not the technology. Use a prompt for a simple task and a workflow when the steps are known. Consider an agent when the path depends on what it discovers, and keep people in control of important decisions.</p>
+</div>
+
+<footer style="margin-top:40px">
+  <h3>Further reading</h3>
+  <ul class="plain">
+    <li><a href="https://modelcontextprotocol.io/introduction" target="_blank" rel="noopener">Model Context Protocol: Introduction</a></li>
+    <li><a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener">NIST AI Risk Management Framework</a></li>
+  </ul>
+  <p class="note">Terminology varies between vendors. This guide is an introduction, not technical, legal, security or compliance advice. Do not enter confidential, personal, client or regulated information into AI tools unless your organisation has approved that use.</p>
+</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  var out=document.getElementById('out');
+  function val(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e&&e.value==='1'}
+  function decide(){
+    var steps=val('q1'),info=val('q2'),disc=val('q3'),risk=val('q4'),h,items=[],cls='';
+    if(disc){h='Consider an agent';cls='agent';
+      items.push('Start with one narrow goal and read-only tools.');
+      if(info)items.push('Connect the sources it needs through retrieval or approved tools.');
+      if(steps)items.push('Fix the known steps as a workflow and let the agent handle only the open part.');
+    }else if(steps){h='Use a workflow';
+      items.push('Same steps, same order, so results are predictable and easy to test.');
+      if(info)items.push('Add retrieval or a tool call at the step that needs outside information.');
+    }else{h='Use a single prompt';
+      items.push('Give role, task, context, format and limits, then review the output.');
+      if(info)items.push('Paste the relevant text, or use a RAG-enabled assistant if the material is large.');
+    }
+    if(risk)items.push('Because mistakes are costly, require human approval before anything is sent, paid, deleted or changed.');
+    out.className='result '+cls;
+    out.innerHTML='<b></b><ul></ul>';
+    out.querySelector('b').textContent=h;
+    var ul=out.querySelector('ul');
+    items.forEach(function(t){var li=document.createElement('li');li.textContent=t;ul.appendChild(li)});
+  }
+  document.getElementById('decider').addEventListener('change',decide);decide();
+
+  var boxes=document.querySelectorAll('#checks input'),prog=document.getElementById('prog');
+  function upd(){var n=0;boxes.forEach(function(b){if(b.checked)n++});
+    prog.textContent=n+' of '+boxes.length+' ready'+(n===boxes.length?'. Good to go.':'')}
+  var saved=[];try{saved=JSON.parse(localStorage.getItem('ai-guide-checks')||'[]')}catch(e){}
+  boxes.forEach(function(b,i){b.checked=!!saved[i];b.addEventListener('change',function(){
+    upd();try{localStorage.setItem('ai-guide-checks',JSON.stringify([].map.call(boxes,function(x){return x.checked})))}catch(e){}})});
+  upd();
+
+  var gs=document.getElementById('gs');
+  gs.addEventListener('input',function(){var q=gs.value.toLowerCase();
+    document.querySelectorAll('#gt tbody tr').forEach(function(r){r.hidden=r.textContent.toLowerCase().indexOf(q)<0})});
+})();
+</script>
