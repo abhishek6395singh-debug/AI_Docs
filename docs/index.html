@@ -79,6 +79,10 @@ ul.plain{padding-left:20px;margin:8px 0 12px;max-width:68ch}ul.plain li{margin-b
 .note{font-size:13px;color:var(--muted);max-width:68ch}
 .take{background:var(--ink);color:var(--bg);border-radius:12px;padding:24px;margin-top:56px}
 .take h2{color:inherit}.take p{font-family:var(--head);font-size:20px;line-height:1.4;max-width:none;margin:0}
+.week{margin-top:28px}.wh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.wh h3{margin:0}
+.wn{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:4px}
+.goal{color:var(--muted);margin:6px 0 0}.outcome{font-size:14.5px}
+.week td:first-child{width:64px;font-family:var(--mono);color:var(--accent)}
 footer a{color:var(--accent)}
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -306,15 +310,31 @@ a{color:var(--accent)}
 
 <section id="roadmap">
   <h2>Your 30-day roadmap</h2>
-  <p>You do not need to become a developer. The aim is to understand the concepts, use AI responsibly and build confidence through exercises.</p>
-  <div class="tw"><table>
-    <thead><tr><th>Week</th><th>Focus</th><th>Try this</th></tr></thead>
-    <tbody>
-      <tr><td>1</td><td>AI and Gen AI basics</td><td>Have an assistant summarise a public article, explain a concept and draft a professional email. Check the facts.</td></tr>
-      <tr><td>2</td><td>Prompting and your data</td><td>Practise role, task, context, format, limits. Ask questions against a few non-confidential documents.</td></tr>
-      <tr><td>3</td><td>Workflows and tools</td><td>Map a repeatable task: inputs, steps, checks, output. Automate one low-risk step.</td></tr>
-      <tr><td>4</td><td>Agents and responsible use</td><td>Design a narrow agent: its tools, boundaries, approval points and success measures.</td></tr>
-    </tbody></table></div>
+  <p>You do not need to become a developer. The aim is to understand the concepts, use AI responsibly and build confidence through small daily exercises. Use only non-confidential material and follow your organisation's AI policy throughout.</p>
+  <div class="week"><div class="wh"><span class="wn">Week 1</span><h3>AI and Gen AI basics</h3></div>
+  <p class="goal">Get comfortable using an assistant and learn to doubt it.</p>
+  <div class="tw"><table><thead><tr><th>Days</th><th>Do this (about 30 to 45 minutes a day)</th></tr></thead><tbody><tr><td>1</td><td>Read sections 1 and 2 of this guide. Explain AI, Gen AI and agents to a colleague in two minutes.</td></tr><tr><td>2</td><td>Ask an assistant to summarise a public article. Then read the article and mark anything it got wrong.</td></tr><tr><td>3</td><td>Ask it to explain one concept you find confusing, first for a beginner, then for an expert. Compare.</td></tr><tr><td>4</td><td>Draft a professional email with it. Edit the tone until it sounds like you.</td></tr><tr><td>5</td><td>Deliberately try to catch a hallucination: ask about a niche fact and check it against a trusted source.</td></tr><tr><td>6</td><td>Write down three tasks from your own week where Gen AI could help and three where it should not be used.</td></tr><tr><td>7</td><td>Review. Keep a short list of what worked and what needed fixing.</td></tr></tbody></table></div>
+  <p class="outcome"><b>By the end of the week:</b> you can explain the three terms, you have a feel for where the tool is reliable, and you have a habit of checking facts.</p></div>
+  <div class="week"><div class="wh"><span class="wn">Week 2</span><h3>Prompting and your data</h3></div>
+  <p class="goal">Learn to get consistent results and to ground answers in real material.</p>
+  <div class="tw"><table><thead><tr><th>Days</th><th>Do this (about 30 to 45 minutes a day)</th></tr></thead><tbody><tr><td>8</td><td>Rewrite one weak prompt using role, task, context, format and limits. Compare the two outputs.</td></tr><tr><td>9</td><td>Give the same task to the assistant with and without an example of the output you want.</td></tr><tr><td>10</td><td>Ask for a table, then a bulleted summary, then a one-line answer from the same material.</td></tr><tr><td>11</td><td>Use only non-confidential documents. Paste one in and ask three questions that need its details.</td></tr><tr><td>12</td><td>Ask the assistant to quote the passage that supports each answer. Check the quotes.</td></tr><tr><td>13</td><td>Save your three best prompts as reusable templates with blanks to fill in.</td></tr><tr><td>14</td><td>Review. Note what you changed in prompts that made the biggest difference.</td></tr></tbody></table></div>
+  <p class="outcome"><b>By the end of the week:</b> you own a small set of tested prompt templates and know when an answer needs a source.</p></div>
+  <div class="week"><div class="wh"><span class="wn">Week 3</span><h3>Workflows and tools</h3></div>
+  <p class="goal">Move from one-off prompts to a repeatable process.</p>
+  <div class="tw"><table><thead><tr><th>Days</th><th>Do this (about 30 to 45 minutes a day)</th></tr></thead><tbody><tr><td>15</td><td>Pick one repeatable task. Write its inputs, steps, checks and output on one page.</td></tr><tr><td>16</td><td>Mark each step: always the same, needs judgment, or needs outside information.</td></tr><tr><td>17</td><td>Turn the fixed steps into a chain of prompts, where one output feeds the next.</td></tr><tr><td>18</td><td>Run the chain on five real examples. Record time taken and mistakes.</td></tr><tr><td>19</td><td>Add one automated check, such as a format check or a required-fields check.</td></tr><tr><td>20</td><td>Try one low-risk automation with an approved tool, such as a draft that waits for your review.</td></tr><tr><td>21</td><td>Review. Calculate time saved per run and decide if the workflow is worth keeping.</td></tr></tbody></table></div>
+  <p class="outcome"><b>By the end of the week:</b> you have a working workflow with a measured result and a clear view of where human review sits.</p></div>
+  <div class="week"><div class="wh"><span class="wn">Week 4</span><h3>Agents and responsible use</h3></div>
+  <p class="goal">Design a safe, narrow agent on paper and make the case for it.</p>
+  <div class="tw"><table><thead><tr><th>Days</th><th>Do this (about 30 to 45 minutes a day)</th></tr></thead><tbody><tr><td>22</td><td>Use the decision tool in this guide on three tasks. Write down why each is a prompt, workflow or agent.</td></tr><tr><td>23</td><td>Choose one narrow agent use case. Write the goal, what "done" means and when it must stop.</td></tr><tr><td>24</td><td>List its tools. Mark each read-only or write, and remove any it does not truly need.</td></tr><tr><td>25</td><td>List the actions that need human approval and the limits for steps, time and spend.</td></tr><tr><td>26</td><td>Write ten test cases, including two awkward ones and one that tries to trick it.</td></tr><tr><td>27</td><td>Fill in the launch checklist in the risks section and name an owner.</td></tr><tr><td>28</td><td>Walk through a shadow-mode run on paper: what would the agent have proposed, and what would you have changed?</td></tr><tr><td>29</td><td>Write a one-page proposal: problem, design, risks, success measures.</td></tr><tr><td>30</td><td>Present it to a colleague or manager and collect their questions.</td></tr></tbody></table></div>
+  <p class="outcome"><b>By the end of the week:</b> you have a one-page agent proposal that a reviewer could approve, change or reject.</p></div>
+  <h3>Month-end self-check</h3>
+  <ul class="plain">
+    <li>I can explain AI, Gen AI and agentic AI to a non-technical colleague.</li>
+    <li>I have prompt templates I trust and I verify important facts.</li>
+    <li>I have mapped at least one real task as a workflow and measured the result.</li>
+    <li>I can say when a task does not need an agent.</li>
+    <li>I know the guardrails any agent would need before it touches real work.</li>
+  </ul>
 </section>
 
 <section id="glossary">
